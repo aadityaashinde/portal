@@ -1,0 +1,250 @@
+:root {
+    --matrix-green: #00ff41;
+    --matrix-green-glow: rgba(0, 255, 65, 0.5);
+    --matrix-dark: #0d0208;
+    --matrix-black: #000000;
+    --glass-bg: rgba(13, 2, 8, 0.7);
+    --glass-border: rgba(0, 255, 65, 0.2);
+    --font-mono: 'JetBrains Mono', 'Courier Prime', monospace;
+    --transition-speed: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--matrix-black);
+    color: var(--matrix-green);
+    font-family: var(--font-mono);
+    overflow: hidden; /* Prevent scrolling during rain effect */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background Canvas */
+#matrix-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.4;
+}
+
+/* Mouse Responsive Glow */
+#cursor-glow {
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(0, 255, 65, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    mix-blend-mode: screen;
+}
+
+/* Main Container */
+#parallax-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+}
+
+/* Login Card */
+.login-card {
+    width: 90%;
+    max-width: 450px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+}
+
+/* Header Section */
+.header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.logo-container {
+    margin-bottom: 20px;
+}
+
+#matrix-logo {
+    width: 80px;
+    height: auto;
+    filter: drop-shadow(0 0 10px var(--matrix-green));
+}
+
+h1 {
+    font-size: 1.8rem;
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px var(--matrix-green);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    color: rgba(0, 255, 65, 0.6);
+    letter-spacing: 1px;
+}
+
+/* Form Styling */
+.input-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+    color: var(--matrix-green);
+}
+
+input, select {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    padding: 12px 15px;
+    color: var(--matrix-green);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    transition: all var(--transition-speed);
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--matrix-green);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+}
+
+input::placeholder {
+    color: rgba(0, 255, 65, 0.3);
+}
+
+/* Select Styling */
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper::after {
+    content: '▼';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    pointer-events: none;
+    color: var(--matrix-green);
+}
+
+select {
+    appearance: none;
+    cursor: pointer;
+}
+
+/* Google Button Styling */
+.google-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.google-btn.disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+    filter: grayscale(1);
+    filter: brightness(0.5);
+}
+
+.google-btn:not(.disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px var(--matrix-green);
+}
+
+.google-icon-wrapper {
+    margin-right: 12px;
+}
+
+.google-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-text {
+    color: #444;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Status Message */
+#status-message {
+    margin-top: 20px;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+}
+
+.hidden {
+    display: none;
+}
+
+.success {
+    color: #00ff41;
+    background: rgba(0, 255, 65, 0.1);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+}
+
+/* Glitch Animation for Logo */
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+.glitch-logo:hover {
+    animation: glitch 0.3s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 25px;
+    }
+    h1 {
+        font-size: 1.4rem;
+    }
+}
