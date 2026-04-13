@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん";
 
+    let mouseX = -1000;
+    let mouseY = -1000;
+
     function resizeCanvas() {
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
@@ -25,13 +28,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = 0; i < drops.length; i++) {
             const text = chars.charAt(Math.floor(Math.random() * chars.length));
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            const dropX = i * fontSize;
+            const dropY = drops[i] * fontSize;
 
-            if (drops[i] * fontSize > height && Math.random() > 0.975) {
+            const dx = dropX - mouseX;
+            const dy = dropY - mouseY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // Matrix rain reacts to mouse proximity
+            if (distance < 120) {
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#ffffff';
+                // slight scatter effect
+                if (Math.random() > 0.8) drops[i] += 1;
+            } else {
+                ctx.fillStyle = '#00ff41';
+                ctx.shadowBlur = 0;
+            }
+
+            ctx.fillText(text, dropX, dropY);
+
+            if (dropY > height && Math.random() > 0.975) {
                 drops[i] = 0;
             }
             drops[i]++;
         }
+        ctx.shadowBlur = 0; // Reset shadow for background fill
     }
 
     window.addEventListener('resize', resizeCanvas);
@@ -43,13 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const cursorGlow = document.getElementById('cursor-glow');
 
     document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
         // Cursor Glow
         cursorGlow.style.left = e.clientX + 'px';
         cursorGlow.style.top = e.clientY + 'px';
 
-        // Parallax Effect
-        const xAxis = (window.innerWidth / 2 - e.clientX) / 25;
-        const yAxis = (window.innerHeight / 2 - e.clientY) / 25;
+        // Parallax Effect (Reduced by 50%)
+        const xAxis = (window.innerWidth / 2 - e.clientX) / 50;
+        const yAxis = (window.innerHeight / 2 - e.clientY) / 50;
         card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
     });
 
