@@ -1,134 +1,135 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Matrix Rain Initialization ---
-    const canvas = document.getElementById('matrix-rain');
-    const ctx = canvas.getContext('2d');
+// Matrix Rain Animation
+const canvas = document.getElementById('matrix-rain');
+const ctx = canvas.getContext('2d');
 
-    let width, height, columns;
-    const fontSize = 16;
-    let drops = [];
+// Set canvas size
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん";
+// Matrix characters
+const characters = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const charArray = characters.split('');
 
-    let mouseX = -1000;
-    let mouseY = -1000;
+const fontSize = 14;
+const columns = Math.floor(canvas.width / fontSize);
+const drops = Array(columns).fill(1);
 
-    function resizeCanvas() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        columns = Math.floor(width / fontSize);
-        drops = Array(columns).fill(1);
-    }
+// Draw matrix rain
+function drawMatrix() {
+    // Fade effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    function drawMatrix() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = '#00ff41';
+    ctx.font = `${fontSize}px JetBrains Mono`;
 
-        ctx.fillStyle = '#00ff41';
-        ctx.font = fontSize + 'px monospace';
+    for (let i = 0; i < drops.length; i++) {
+        const text = charArray[Math.floor(Math.random() * charArray.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-        for (let i = 0; i < drops.length; i++) {
-            const text = chars.charAt(Math.floor(Math.random() * chars.length));
-            const dropX = i * fontSize;
-            const dropY = drops[i] * fontSize;
-
-            const dx = dropX - mouseX;
-            const dy = dropY - mouseY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-
-            // Matrix rain reacts to mouse proximity
-            if (distance < 120) {
-                ctx.fillStyle = '#ffffff';
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = '#ffffff';
-                // slight scatter effect
-                if (Math.random() > 0.8) drops[i] += 1;
-            } else {
-                ctx.fillStyle = '#00ff41';
-                ctx.shadowBlur = 0;
-            }
-
-            ctx.fillText(text, dropX, dropY);
-
-            if (dropY > height && Math.random() > 0.975) {
-                drops[i] = 0;
-            }
-            drops[i]++;
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
         }
-        ctx.shadowBlur = 0; // Reset shadow for background fill
+        drops[i]++;
+    }
+}
+
+setInterval(drawMatrix, 50);
+
+// Cursor glow effect
+const cursorGlow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', (e) => {
+    cursorGlow.style.left = e.clientX + 'px';
+    cursorGlow.style.top = e.clientY + 'px';
+});
+
+// Parallax effect for login card
+const loginCard = document.getElementById('login-card');
+const parallaxContainer = document.getElementById('parallax-container');
+
+document.addEventListener('mousemove', (e) => {
+    const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+    const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+    loginCard.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+});
+
+// Form elements
+const loginForm = document.querySelector("#login-form");
+const nameInput = document.querySelector("#name");
+const roleInput = document.querySelector("#role");
+const emailInput = document.querySelector("#email");
+const statusMessage = document.querySelector("#status-message");
+const submitButton = document.querySelector("#google-signin");
+
+function validateForm() {
+    const name = nameInput.value.trim();
+    const role = roleInput.value.trim();
+    const email = emailInput.value.trim();
+    const isValid = name && role && email;
+
+    submitButton.disabled = !isValid;
+    submitButton.classList.toggle("disabled", !isValid);
+}
+
+[nameInput, roleInput, emailInput].forEach(input => {
+    input.addEventListener("input", validateForm);
+    input.addEventListener("change", validateForm);
+});
+
+validateForm();
+
+function showMessage(message, type = "success") {
+    statusMessage.textContent = message;
+    statusMessage.classList.remove("hidden");
+    statusMessage.style.color = type === "success" ? "#00ff9f" : "#ff4d4f";
+}
+
+loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const name = nameInput.value.trim();
+    const role = roleInput.value.trim();
+    const email = emailInput.value.trim();
+
+    if (!name || !role || !email) {
+        showMessage("Please fill in all fields.", "error");
+        return;
     }
 
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-    setInterval(drawMatrix, 50);
+    submitButton.disabled = true;
+    submitButton.querySelector(".btn-text").textContent = "PROCESSING...";
 
-    // --- Mouse Responsiveness ---
-    const card = document.getElementById('login-card');
-    const cursorGlow = document.getElementById('cursor-glow');
+    try {
+        const response = await fetch("/api/v1/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                role
+            })
+        });
 
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+        const data = await response.json();
 
-        // Cursor Glow
-        cursorGlow.style.left = e.clientX + 'px';
-        cursorGlow.style.top = e.clientY + 'px';
-
-        // Parallax Effect (Reduced by 50%)
-        const xAxis = (window.innerWidth / 2 - e.clientX) / 50;
-        const yAxis = (window.innerHeight / 2 - e.clientY) / 50;
-        card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-    });
-
-    // Reset card on mouse leave
-    document.addEventListener('mouseleave', () => {
-        card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-    });
-
-    // --- Form Validation & Unlock Logic ---
-    const form = document.getElementById('login-form');
-    const nameInput = document.getElementById('name');
-    const roleSelect = document.getElementById('role');
-    const emailInput = document.getElementById('email');
-    const googleBtn = document.getElementById('google-signin');
-    const statusMsg = document.getElementById('status-message');
-
-    function validateForm() {
-        const isNameValid = nameInput.value.trim().length > 0;
-        const isRoleValid = roleSelect.value !== "";
-        const isEmailValid = emailInput.checkValidity() && emailInput.value.includes('@');
-
-        if (isNameValid && isRoleValid && isEmailValid) {
-            googleBtn.disabled = false;
-            googleBtn.classList.remove('disabled');
-        } else {
-            googleBtn.disabled = true;
-            googleBtn.classList.add('disabled');
+        if (!response.ok) {
+            showMessage(data.detail || "Failed to save user.", "error");
+            return;
         }
+
+        showMessage(`Access granted. User saved: ${data.name}`, "success");
+        loginForm.reset();
+    } catch (error) {
+        console.error(error);
+        showMessage("Server connection failed.", "error");
+    } finally {
+        submitButton.disabled = false;
+        submitButton.querySelector(".btn-text").textContent = "SIGN IN WITH GOOGLE";
     }
-
-    [nameInput, roleSelect, emailInput].forEach(input => {
-        input.addEventListener('input', validateForm);
-        input.addEventListener('change', validateForm);
-    });
-
-    // Handle Google Sign-in Click
-    googleBtn.addEventListener('click', () => {
-        if (googleBtn.disabled) return;
-
-        // Visual feedback
-        googleBtn.innerHTML = '<span class="btn-text">DECODING ACCESS...</span>';
-        googleBtn.style.background = '#00ff41';
-        googleBtn.querySelector('.btn-text').style.color = '#000';
-
-        setTimeout(() => {
-            statusMsg.textContent = "ACCESS GRANTED. WELCOME TO THE CONSTRUCT, " + nameInput.value.toUpperCase();
-            statusMsg.classList.remove('hidden');
-            statusMsg.classList.add('success');
-            
-            // Revert button (optional simulation)
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 2000);
-        }, 1500);
-    });
 });
