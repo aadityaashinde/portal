@@ -1,0 +1,327 @@
+/* Dashboard specific styles */
+
+#dashboard-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    padding: 20px;
+}
+
+.dashboard-card {
+    width: 90%;
+    max-width: 500px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.dashboard-header h1 {
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px var(--matrix-green);
+    margin-bottom: 10px;
+}
+
+/* User Info Panel - Compact styling for above app grid */
+.user-info-panel {
+    margin-bottom: 25px;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.05);
+}
+
+.user-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+}
+
+.user-info-item:last-child {
+    border-bottom: none;
+}
+
+.user-info-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(0, 255, 65, 0.6);
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+}
+
+.user-info-value {
+    font-size: 0.85rem;
+    color: var(--matrix-green);
+    text-shadow: 0 0 5px var(--matrix-green-glow);
+    font-family: var(--font-mono);
+}
+
+/* Legacy user-info styles (for backward compatibility) */
+.user-info {
+    margin-bottom: 35px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(0, 255, 65, 0.6);
+}
+
+.info-value {
+    font-size: 0.9rem;
+    color: var(--matrix-green);
+    text-shadow: 0 0 5px var(--matrix-green-glow);
+}
+
+/* App Grid Styles */
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.app-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 15px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.app-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.app-card:hover::before {
+    left: 100%;
+}
+
+.app-card:hover {
+    background: rgba(0, 255, 65, 0.05);
+    border-color: rgba(0, 255, 65, 0.4);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+    transform: translateY(-3px);
+}
+
+.app-card.placeholder {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.app-card.placeholder .app-icon {
+    color: rgba(0, 255, 65, 0.3);
+}
+
+.app-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    color: var(--matrix-green);
+}
+
+.app-icon svg {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 0 5px var(--matrix-green-glow));
+}
+
+.app-name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: rgba(0, 255, 65, 0.8);
+    text-align: center;
+    font-family: var(--font-mono);
+}
+
+.dashboard-footer {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.dashboard-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--matrix-green);
+    border-radius: 4px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.logout-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.logout-btn:hover::before {
+    left: 100%;
+}
+
+.logout-btn:hover {
+    background: rgba(0, 255, 65, 0.1);
+    box-shadow: 0 0 20px var(--matrix-green-glow);
+    transform: translateY(-2px);
+}
+
+.logout-btn svg {
+    width: 16px;
+    height: 16px;
+    color: var(--matrix-green);
+}
+
+.logout-btn .btn-text {
+    color: var(--matrix-green);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-family: var(--font-mono);
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.loading {
+    animation: pulse 1.5s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .dashboard-card {
+        padding: 25px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.2rem;
+    }
+
+    .user-info-panel {
+        padding: 12px 15px;
+    }
+
+    .user-info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+        padding: 6px 0;
+    }
+
+    .user-info-value {
+        font-size: 0.8rem;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .info-value {
+        font-size: 0.85rem;
+    }
+
+    .app-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .app-card {
+        padding: 15px 10px;
+    }
+
+    .app-icon {
+        width: 35px;
+        height: 35px;
+    }
+
+    .app-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .app-name {
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 320px) {
+    .app-grid {
+        grid-template-columns: 1fr;
+    }
+}
