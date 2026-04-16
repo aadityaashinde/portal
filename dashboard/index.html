@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Matrix | Dashboard</title>
+    <meta name="description" content="Secure digital access portal - Dashboard">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=JetBrains+Mono:wght@300;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Local Styles -->
+    <link rel="stylesheet" href="../frontend/css/style.css">
+    <link rel="stylesheet" href="./dashboard.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../frontend/images/matrix-logo.png">
+</head>
+
+<body>
+    <!-- Matrix Rain Canvas Background -->
+    <canvas id="matrix-rain"></canvas>
+
+    <!-- Dashboard Container -->
+    <div id="dashboard-container">
+        <div class="dashboard-card">
+            <div class="dashboard-header">
+                <div class="logo-container">
+                    <img src="../frontend/images/matrix-logo.png" alt="Matrix Logo" id="matrix-logo" class="glitch-logo">
+                </div>
+                <h1>WELCOME TO THE MATRIX</h1>
+            </div>
+
+            <!-- User Info Panel -->
+            <div id="user-info-panel" class="user-info-panel">
+                <div class="user-info-item">
+                    <span class="user-info-label">Name:</span>
+                    <span id="dashboard-name" class="user-info-value"></span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">Email:</span>
+                    <span id="dashboard-email" class="user-info-value"></span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">Provider:</span>
+                    <span id="dashboard-provider" class="user-info-value"></span>
+                </div>
+            </div>
+
+            <!-- App Icons Grid -->
+            <div class="app-grid">
+                <div class="app-card" data-app="rag-chat">
+                    <div class="app-icon">
+                        <i data-lucide="message-square-code"></i>
+                    </div>
+                    <span class="app-name">RAG Chat Bot</span>
+                </div>
+
+                <div class="app-card" data-app="curriculum-builder">
+                    <div class="app-icon">
+                        <i data-lucide="file-text"></i>
+                    </div>
+                    <span class="app-name">Curriculum Builder</span>
+                </div>
+
+                <div class="app-card" data-app="voice-agent">
+                    <div class="app-icon">
+                        <i data-lucide="mic"></i>
+                    </div>
+                    <span class="app-name">Voice Agent</span>
+                </div>
+
+                <div class="app-card placeholder" data-app="placeholder-1">
+                    <div class="app-icon">
+                        <i data-lucide="box"></i>
+                    </div>
+                    <span class="app-name">Coming Soon</span>
+                </div>
+
+                <div class="app-card placeholder" data-app="placeholder-2">
+                    <div class="app-icon">
+                        <i data-lucide="box"></i>
+                    </div>
+                    <span class="app-name">Coming Soon</span>
+                </div>
+
+                <div class="app-card placeholder" data-app="placeholder-3">
+                    <div class="app-icon">
+                        <i data-lucide="box"></i>
+                    </div>
+                    <span class="app-name">Coming Soon</span>
+                </div>
+            </div>
+
+            <div class="dashboard-footer">
+                <button id="logout-btn" class="logout-btn">
+                    <i data-lucide="log-out"></i>
+                    <span class="btn-text">DISCONNECT</span>
+                </button>
+            </div>
+
+            <div id="status-message" class="hidden"></div>
+        </div>
+    </div>
+
+    <!-- Mouse Trail Follower -->
+    <div id="cursor-glow"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="./dashboard.js"></script>
+</body>
+
+</html>
