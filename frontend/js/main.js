@@ -3,6 +3,13 @@ const API_BASE_URL =
         ? "http://127.0.0.1:8000"
         : "https://api.thegenalphalabs.com";
 
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const SUPABASE_URL = "https://tjgqrhkhijponodsosya.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // Matrix Rain Animation
 const canvas = document.getElementById("matrix-rain");
 const ctx = canvas.getContext("2d");
@@ -113,6 +120,26 @@ function validateForm() {
 
 validateForm();
 
+// If already signed in, send user straight to dashboard
+async function checkSessionAndRedirect() {
+    try {
+        const { data, error } = await supabase.auth.getSession();
+
+        if (error) {
+            console.error("Session check error:", error);
+            return;
+        }
+
+        if (data?.session) {
+            window.location.href = "/dashboard";
+        }
+    } catch (err) {
+        console.error("Unexpected session check error:", err);
+    }
+}
+
+checkSessionAndRedirect();
+
 if (loginForm) {
     loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -130,6 +157,7 @@ if (loginForm) {
         if (submitButtonText) submitButtonText.textContent = "PROCESSING...";
 
         try {
+            // Step 1: Keep your current backend registration
             const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
                 method: "POST",
                 headers: {
@@ -149,13 +177,29 @@ if (loginForm) {
                 return;
             }
 
-            showMessage(`Access granted. User saved: ${data.name || name}`, "success");
-            loginForm.reset();
-            validateForm();
+            showMessage(
+                `User saved. Redirecting to Google sign-in for ${data.name || name}...`,
+                "success"
+            );
+
+            // Step 2: Start Google OAuth
+            const { error: oauthError } = await supabase.auth.signInWithOAuth({
+                provider: "google",
+                options: {
+                    redirectTo: "https://portal.thegenalphalabs.com/dashboard",
+                },
+            });
+
+            if (oauthError) {
+                console.error("Google OAuth error:", oauthError);
+                showMessage(oauthError.message || "Google sign-in failed.", "error");
+                return;
+            }
         } catch (error) {
             console.error("Submission error:", error);
             showMessage("Server connection failed.", "error");
         } finally {
+            // Note: if OAuth succeeds, browser redirects before this matters much.
             if (submitButton) submitButton.disabled = false;
             if (submitButtonText) {
                 submitButtonText.textContent = "SIGN IN WITH GOOGLE";
