@@ -1,7 +1,7 @@
 const API_BASE_URL =
     ["localhost", "127.0.0.1"].includes(window.location.hostname)
         ? "http://127.0.0.1:8000"
-        : "https://51.20.188.97";
+        : "https://api.thegenalphalabs.com";
 
 // Matrix Rain Animation
 const canvas = document.getElementById("matrix-rain");
