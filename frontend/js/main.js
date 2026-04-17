@@ -1,12 +1,8 @@
-const API_BASE_URL =
-    ["localhost", "127.0.0.1"].includes(window.location.hostname)
-        ? "http://127.0.0.1:8000"
-        : "https://api.thegenalphalabs.com";
-
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL = "https://tjgqrhkhijponodsosya.supabase.co";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = window.APP_CONFIG.SUPABASE_URL;
+const SUPABASE_ANON_KEY = window.APP_CONFIG.SUPABASE_ANON_KEY;
+const API_BASE_URL = window.APP_CONFIG.API_BASE_URL;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

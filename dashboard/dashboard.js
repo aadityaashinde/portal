@@ -1,7 +1,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL = "https://tjgqrhkhijponodsosya.supabase.co";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = window.APP_CONFIG.SUPABASE_URL;
+const SUPABASE_ANON_KEY = window.APP_CONFIG.SUPABASE_ANON_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -110,4 +110,26 @@ if (logoutBtn) {
     });
 }
 
-checkSession();
+// Handle OAuth callback from Google authentication
+async function handleOAuthCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode = urlParams.get("code");
+
+    if (authCode) {
+        const { error } = await supabase.auth.exchangeCodeForSession(authCode);
+
+        if (error) {
+            console.error("OAuth callback error:", error);
+            redirectToLogin();
+            return;
+        }
+
+        // Remove the code from URL to clean it up
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
+
+// Handle OAuth callback first, then check session
+handleOAuthCallback().then(() => {
+    checkSession();
+});
