@@ -116,6 +116,7 @@ if (logoutBtn) {
 async function handleOAuthCallback() {
     console.log("Handling OAuth callback, URL:", window.location.href);
 
+    // --- Handle code-based flow (PKCE) ---
     const urlParams = new URLSearchParams(window.location.search);
     const authCode = urlParams.get("code");
 
@@ -126,22 +127,45 @@ async function handleOAuthCallback() {
         if (error) {
             console.error("OAuth callback error:", error);
             showMessage("Authentication failed. Please try again.", "error");
-            return;
+            return false;
         }
 
         console.log("Session exchanged successfully:", data.session ? "yes" : "no");
-
-        // Remove the code from URL to clean it up
         window.history.replaceState({}, document.title, window.location.pathname);
+        return true;
     }
 
-    // Also check for hash-based tokens (implicit flow fallback)
+    // --- Handle hash-based flow (implicit) ---
     const hash = window.location.hash;
     if (hash && hash.includes("access_token")) {
-        console.log("Found access token in hash, Supabase should have auto-processed it");
-        // Supabase client auto-processes hash tokens on init, just clean the URL
+        console.log("Found access token in hash, setting session explicitly...");
+
+        // Parse the hash fragment into key-value pairs
+        const hashParams = new URLSearchParams(hash.substring(1));
+        const accessToken = hashParams.get("access_token");
+        const refreshToken = hashParams.get("refresh_token");
+
+        if (accessToken && refreshToken) {
+            const { data, error } = await supabase.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+            });
+
+            if (error) {
+                console.error("Failed to set session from hash:", error);
+                showMessage("Authentication failed. Please try again.", "error");
+                return false;
+            }
+
+            console.log("Session set from hash successfully:", data.session ? "yes" : "no");
+        }
+
+        // Clean up the URL
         window.history.replaceState({}, document.title, window.location.pathname);
+        return true;
     }
+
+    return false;
 }
 
 // Handle OAuth callback first, then check session
