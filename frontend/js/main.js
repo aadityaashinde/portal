@@ -190,7 +190,7 @@ if (loginForm) {
             const { error: oauthError } = await supabase.auth.signInWithOAuth({
                 provider: "google",
                 options: {
-                    redirectTo: window.location.origin + "/dashboard/",
+                    redirectTo: "https://portal.thegenalphalabs.com/dashboard",
                 },
             });
 
