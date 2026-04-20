@@ -1,9 +1,11 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL = window.APP_CONFIG.SUPABASE_URL;
-const SUPABASE_ANON_KEY = window.APP_CONFIG.SUPABASE_ANON_KEY;
+const APP_CONFIG = {
+  SUPABASE_URL: "https://tjgqrhkhijponodsosya.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZ3FyaGtoaWpwb25vZHNvc3lhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMzA3MTMsImV4cCI6MjA5MTkwNjcxM30.32dX7FSDCkktPsSsxFbXdlXQKgXOhOhsHTE6Xv3kkdA"
+};
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = createClient(APP_CONFIG.SUPABASE_URL, APP_CONFIG.SUPABASE_ANON_KEY);
 
 const statusMessage = document.getElementById("status-message");
 const logoutBtn = document.getElementById("logout-btn");
@@ -112,19 +114,32 @@ if (logoutBtn) {
 
 // Handle OAuth callback from Google authentication
 async function handleOAuthCallback() {
+    console.log("Handling OAuth callback, URL:", window.location.href);
+
     const urlParams = new URLSearchParams(window.location.search);
     const authCode = urlParams.get("code");
 
     if (authCode) {
-        const { error } = await supabase.auth.exchangeCodeForSession(authCode);
+        console.log("Found auth code, exchanging for session...");
+        const { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
 
         if (error) {
             console.error("OAuth callback error:", error);
-            redirectToLogin();
+            showMessage("Authentication failed. Please try again.", "error");
             return;
         }
 
+        console.log("Session exchanged successfully:", data.session ? "yes" : "no");
+
         // Remove the code from URL to clean it up
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Also check for hash-based tokens (implicit flow fallback)
+    const hash = window.location.hash;
+    if (hash && hash.includes("access_token")) {
+        console.log("Found access token in hash, Supabase should have auto-processed it");
+        // Supabase client auto-processes hash tokens on init, just clean the URL
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 }
