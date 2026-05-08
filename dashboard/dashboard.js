@@ -172,3 +172,14 @@ async function handleOAuthCallback() {
 handleOAuthCallback().then(() => {
     checkSession();
 });
+
+// App Card Click Handlers
+const appCards = document.querySelectorAll('.app-card');
+appCards.forEach(card => {
+    card.addEventListener('click', () => {
+        const appName = card.getAttribute('data-app');
+        if (appName === 'voice-agent') {
+            window.location.href = 'https://stt.thegenalphalabs.com/';
+        }
+    });
+});
